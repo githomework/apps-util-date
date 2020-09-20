@@ -96,6 +96,32 @@ const (
 2021-12-26
 2021-12-27
 2021-12-28`
+
+	waHolidays = `2020-01-01
+2020-01-27
+2020-03-02
+2020-04-10
+2020-04-13
+2020-04-25
+2020-04-27
+2020-06-01
+2020-09-28
+2020-12-25
+2020-12-26
+2020-12-28
+2021-01-01
+2021-01-26
+2021-03-01
+2021-04-02
+2021-04-05
+2021-04-25
+2021-04-26
+2021-06-07
+2021-09-27
+2021-12-25
+2021-12-26
+2021-12-27
+2021-12-28`
 )
 
 func init() {
@@ -116,6 +142,8 @@ func holidays(plant string) map[time.Time]bool {
 		days = vicHolidays
 	case "4000":
 		days = qldHolidays
+	case "6000":
+		days = waHolidays
 	}
 
 	for _, v := range strings.Split(days, "\n") {
@@ -134,6 +162,9 @@ func PreviousWorkDay(plant string) (time.Time, int) {
 		loc, _ = time.LoadLocation("Australia/Sydney")
 	case "4000":
 		loc, _ = time.LoadLocation("Australia/Brisbane")
+	case "6000":
+		loc, _ = time.LoadLocation("Australia/Perth")
+
 	}
 	offset = -1
 	d, _ := time.Parse("2006-01-02", time.Now().Add(-24*time.Hour).In(loc).Format("2006-01-02"))
