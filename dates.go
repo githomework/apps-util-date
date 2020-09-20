@@ -126,19 +126,21 @@ func holidays(plant string) map[time.Time]bool {
 	return m
 }
 
-
-func PreviousWorkDay(plant string) time.Time {
+func PreviousWorkDay(plant string) (time.Time, int) {
 	var loc *time.Location
+	var offset int
 	switch plant {
-	case "2000","3000":
-		loc ,_ = time.LoadLocation("Australia/Sydney")
+	case "2000", "3000":
+		loc, _ = time.LoadLocation("Australia/Sydney")
 	case "4000":
 		loc, _ = time.LoadLocation("Australia/Brisbane")
 	}
-	d,_ := time.Parse("2006-01-02", time.Now().Add(-24*time.Hour).In(loc).Format("2006-01-02"))
+	offset = -1
+	d, _ := time.Parse("2006-01-02", time.Now().Add(-24*time.Hour).In(loc).Format("2006-01-02"))
 
 	for d.Weekday() == time.Saturday || d.Weekday() == time.Sunday || HolidayMap[plant][d] {
-		d = d.Add(-24*time.Hour)
+		d = d.Add(-24 * time.Hour)
+		offset--
 	}
-	return d
+	return d, offset
 }
