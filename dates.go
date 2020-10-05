@@ -6,7 +6,8 @@ import (
 )
 
 var (
-	HolidayMap map[string]map[time.Time]bool
+	HolidayMap    map[string]map[time.Time]bool
+	plantLocation map[string]*time.Location
 )
 
 const (
@@ -131,6 +132,12 @@ func init() {
 	HolidayMap["3000"] = holidays("3000")
 	HolidayMap["4000"] = holidays("4000")
 
+	plantLocation = map[string]*time.Location{}
+	plantLocation["2000"], _ = time.LoadLocation("Australia/Sydney")
+	plantLocation["3000"], _ = time.LoadLocation("Australia/Melbourne")
+	plantLocation["4000"], _ = time.LoadLocation("Australia/Brisbane")
+	plantLocation["6000"], _ = time.LoadLocation("Australia/Perth")
+
 }
 func holidays(plant string) map[time.Time]bool {
 	days := ""
@@ -155,21 +162,34 @@ func holidays(plant string) map[time.Time]bool {
 }
 
 func PreviousWorkDay(plant string) (time.Time, int) {
-	var loc *time.Location
-	var offset int
-	switch plant {
-	case "2000", "3000":
-		loc, _ = time.LoadLocation("Australia/Sydney")
-	case "4000":
-		loc, _ = time.LoadLocation("Australia/Brisbane")
-	case "6000":
-		loc, _ = time.LoadLocation("Australia/Perth")
 
-	}
+	var offset int
+	loc := plantLocation[plant]
 	offset = -1
 	d, _ := time.Parse("2006-01-02", time.Now().Add(-24*time.Hour).In(loc).Format("2006-01-02"))
 
 	for d.Weekday() == time.Saturday || d.Weekday() == time.Sunday || HolidayMap[plant][d] {
+		d = d.Add(-24 * time.Hour)
+		offset--
+	}
+	return d, offset
+}
+
+func NWorkDaysAgo(plant string, n int) (time.Time, int) {
+	var offset int
+	var workdays int
+	loc := plantLocation[plant]
+	offset = -1
+	d, _ := time.Parse("2006-01-02", time.Now().Add(-24*time.Hour).In(loc).Format("2006-01-02"))
+	for workdays < n {
+		for d.Weekday() == time.Saturday || d.Weekday() == time.Sunday || HolidayMap[plant][d] {
+			d = d.Add(-24 * time.Hour)
+			offset--
+		}
+		workdays++
+		if workdays == n {
+			break
+		}
 		d = d.Add(-24 * time.Hour)
 		offset--
 	}
