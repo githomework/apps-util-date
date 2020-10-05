@@ -162,17 +162,7 @@ func holidays(plant string) map[time.Time]bool {
 }
 
 func PreviousWorkDay(plant string) (time.Time, int) {
-
-	var offset int
-	loc := plantLocation[plant]
-	offset = -1
-	d, _ := time.Parse("2006-01-02", time.Now().Add(-24*time.Hour).In(loc).Format("2006-01-02"))
-
-	for d.Weekday() == time.Saturday || d.Weekday() == time.Sunday || HolidayMap[plant][d] {
-		d = d.Add(-24 * time.Hour)
-		offset--
-	}
-	return d, offset
+	return NWorkDaysAgo(plant, 1)
 }
 
 func NWorkDaysAgo(plant string, n int) (time.Time, int) {
