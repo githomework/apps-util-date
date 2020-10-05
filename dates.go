@@ -141,10 +141,11 @@ func init() {
 
 	t := time.Now()
 	t2 := time.Date(t.Year(), t.Month(), t.Day(), 12, 0, 0, 0, plantLocation["2000"])
+	LocalHourDiff = map[string]int{}
 	LocalHourDiff["2000"] = 0
 	LocalHourDiff["3000"] = 0
-	LocalHourDiff["4000"] = t2.Hour() - t2.In(plantLocation["4000"]).Local().Hour()
-	LocalHourDiff["6000"] = t2.Hour() - t2.In(plantLocation["6000"]).Local().Hour()
+	LocalHourDiff["4000"] = t2.Hour() - t2.In(plantLocation["4000"]).Hour()
+	LocalHourDiff["6000"] = t2.Hour() - t2.In(plantLocation["6000"]).Hour()
 
 }
 func holidays(plant string) map[time.Time]bool {

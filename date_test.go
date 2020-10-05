@@ -14,4 +14,5 @@ func TestDate(t *testing.T) {
 	fmt.Println("3000", d)
 	d, offset := date.NWorkDaysAgo("3000", 60)
 	fmt.Println("3000", d, offset)
+	fmt.Println("6000 hour to 2000", date.HourLocalTo2000("6000", 7))
 }
