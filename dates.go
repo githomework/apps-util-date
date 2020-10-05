@@ -8,6 +8,7 @@ import (
 var (
 	HolidayMap    map[string]map[time.Time]bool
 	plantLocation map[string]*time.Location
+	LocalHourDiff map[string]int
 )
 
 const (
@@ -138,6 +139,13 @@ func init() {
 	plantLocation["4000"], _ = time.LoadLocation("Australia/Brisbane")
 	plantLocation["6000"], _ = time.LoadLocation("Australia/Perth")
 
+	t := time.Now()
+	t2 := time.Date(t.Year(), t.Month(), t.Day(), 12, 0, 0, 0, plantLocation["2000"])
+	LocalHourDiff["2000"] = 0
+	LocalHourDiff["3000"] = 0
+	LocalHourDiff["4000"] = t2.Hour() - t2.In(plantLocation["4000"]).Local().Hour()
+	LocalHourDiff["6000"] = t2.Hour() - t2.In(plantLocation["6000"]).Local().Hour()
+
 }
 func holidays(plant string) map[time.Time]bool {
 	days := ""
@@ -184,4 +192,8 @@ func NWorkDaysAgo(plant string, n int) (time.Time, int) {
 		offset--
 	}
 	return d, offset
+}
+
+func HourLocalTo2000(plant string, localHour int) int {
+	return localHour + LocalHourDiff[plant]
 }
