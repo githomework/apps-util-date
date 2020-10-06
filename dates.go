@@ -195,6 +195,7 @@ func NWorkDaysAgo(plant string, n int) (time.Time, int) {
 	return d, offset
 }
 
+// Need to ADD result to get to the 2000 time.  Need to be careful with not crossing date boundaries.
 func HourLocalTo2000(plant string, localHour int) int {
 	return localHour + LocalHourDiff[plant]
 }
