@@ -199,3 +199,8 @@ func NWorkDaysAgo(plant string, n int) (time.Time, int) {
 func HourLocalTo2000(plant string, localHour int) int {
 	return (localHour + LocalHourDiff[plant]) % 24
 }
+
+func LocalTime(plant string) time.Time {
+	loc := plantLocation[plant]
+	return time.Now().In(loc)
+}
