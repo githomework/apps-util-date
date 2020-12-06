@@ -23,3 +23,8 @@ func TestLocalTime(t *testing.T) {
 	fmt.Println("Local time 4000", date.LocalTime("4000").Format("15:04"))
 	fmt.Println("Local time 6000", date.LocalTime("6000").Format("15:04"))
 }
+
+func TestAdhoc(t *testing.T) {
+	d, offset := date.PreviousWorkDay("2000")
+	fmt.Println(d, offset)
+}

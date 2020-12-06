@@ -174,10 +174,17 @@ func PreviousWorkDay(plant string) (time.Time, int) {
 	return NWorkDaysAgo(plant, 1)
 }
 
+// n must be >= 0
 func NWorkDaysAgo(plant string, n int) (time.Time, int) {
 	var offset int
+
 	var workdays int
 	loc := plantLocation[plant]
+	if n <= 0 {
+		d, _ := time.Parse("2006-01-02", time.Now().In(loc).Format("2006-01-02"))
+		return d, 0
+	}
+
 	offset = -1
 	d, _ := time.Parse("2006-01-02", time.Now().Add(-24*time.Hour).In(loc).Format("2006-01-02"))
 	for workdays < n {
@@ -193,6 +200,31 @@ func NWorkDaysAgo(plant string, n int) (time.Time, int) {
 		offset--
 	}
 	return d, offset
+}
+
+func LastNWorkDays(plant string, n int) (nWorkdays []time.Time) {
+	var offset int
+	var workdays int
+
+	loc := plantLocation[plant]
+	offset = -1
+	d, _ := time.Parse("2006-01-02", time.Now().Add(-24*time.Hour).In(loc).Format("2006-01-02"))
+	for workdays < n {
+		for d.Weekday() == time.Saturday || d.Weekday() == time.Sunday || HolidayMap[plant][d] {
+			d = d.Add(-24 * time.Hour)
+			offset--
+		}
+		workdays++
+		nWorkdays = append(nWorkdays, d)
+		if workdays == n {
+			break
+		}
+		d = d.Add(-24 * time.Hour)
+		offset--
+	}
+
+	return
+
 }
 
 // Need to ADD result to get to the 2000 time.  Need to be careful with not crossing date boundaries.
